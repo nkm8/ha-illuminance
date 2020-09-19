@@ -13,7 +13,6 @@ import voluptuous as vol
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN, PLATFORM_SCHEMA)
-from homeassistant.components.accuweather.sensor import ATTRIBUTION as AW_ATTRIBUTION
 from homeassistant.const import (
     ATTR_ATTRIBUTION, CONF_ENTITY_ID, CONF_API_KEY, CONF_NAME,
     CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START)
@@ -239,7 +238,7 @@ class IlluminanceSensor(Entity):
                                   ATTR_ATTRIBUTION, self._entity_id)
                 return
             conditions = state.state
-            if attribution == AW_ATTRIBUTION:
+            if 'AccuWeather' in attribution:
                 mapping = AW_MAPPING
             elif 'Ecobee' in attribution:
                 mapping = ECOBEE_MAPPING
