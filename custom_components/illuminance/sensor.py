@@ -14,6 +14,7 @@ import voluptuous as vol
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN, PLATFORM_SCHEMA)
 from homeassistant.components.accuweather.sensor import ATTRIBUTION as AW_ATTRIBUTION
+from homeassistant.components.ecobee.sensor import ATTRIBUTION as ECOBEE_ATTRIBUTION
 from homeassistant.const import (
     ATTR_ATTRIBUTION, CONF_ENTITY_ID, CONF_API_KEY, CONF_NAME,
     CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START)
@@ -43,6 +44,11 @@ AW_MAPPING = (
     (2500, ('mostlycloudy')),
     (7500, ('partlycloudy')),
     (10000, ('sunny', 'clear-night')))
+ECOBEE_MAPPING = (
+    (200, ('pouring', 'snowy-heavy', 'lightning-rainy')),
+    (1000, ('cloudy', 'fog', 'rainy', 'snowy', 'snowy-rainy', 'hail', 'windy', 'tornado')),
+    (7500, ('partlycloudy', 'hazy')),
+    (10000, ('sunny')))
 
 CONF_QUERY = 'query'
 
@@ -243,6 +249,15 @@ class IlluminanceSensor(Entity):
                                       self._entity_id)
                     return
                 mapping = AW_MAPPING
+            elif attribution == ECOBEE_ATTRIBUTION:
+                try:
+                    conditions = int(raw_conditions)
+                except (TypeError, ValueError):
+                    if self._init_complete:
+                        _LOGGER.error('State of Ecobee sensor not a number: %s',
+                                      self._entity_id)
+                    return
+                mapping = ECOBEE_MAPPING
             else:
                 if self._init_complete:
                     _LOGGER.error('Unsupported sensor: %s', self._entity_id)
