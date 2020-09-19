@@ -7,7 +7,7 @@ Estimates outdoor illuminance based on current weather conditions and time of da
 The following sources of weather data are supported:
 
 * Weather Underground
-* [YR (symbol)](https://www.home-assistant.io/components/sensor.yr/)
+* [AccuWeather (symbol)](https://www.home-assistant.io/integrations/accuweather/)
 
 Follow the installation instructions below.
 Then add the desired configuration. Here is an example of a typical configuration:
@@ -15,7 +15,7 @@ Then add the desired configuration. Here is an example of a typical configuratio
 ```yaml
 sensor:
   - platform: illuminance
-    entity_id: sensor.yr_symbol
+    entity_id: weather.accuweather_home
 ```
 
 ## Installation
@@ -33,24 +33,16 @@ where `<config>` is your Home Assistant configuration directory.
 ## Configuration variables
 
 * **api_key**: Weather Underground API key. Required when using WU.
-* **entity_id**: Entity ID of YR entity. See examples below. Required when using YR.
+* **entity_id**: Entity ID of AccuWeather entity. See examples below. Required when using AccuWeather.
 * **name** (*Optional*): Name of the sensor. Default is `Illuminance`.
 * **scan_interval** (*Optional*): Polling interval.  For non-WU configs only applies during ramp up period around sunrise and ramp down period around sunset. Minimum is 5 minutes. Default is 5 minutes.
 * **query**: Weather Underground query. See [here](https://www.wunderground.com/weather/api/d/docs?d=data/index). Required when using WU.
 
 ## Examples
 
-### YR Sensor
+### AccuWeather Entity
 
-```yaml
-sensor:
-  - platform: yr
-    monitored_conditions:
-      - symbol
-  - platform: illuminance
-    name: YRS Illuminance
-    entity_id: sensor.yr_symbol
-```
+AccuWeather can only be configured via the Integrations menu under Configuration in the Home Assistant UI
 
 ### Weather Underground
 
