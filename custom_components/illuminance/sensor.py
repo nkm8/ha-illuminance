@@ -14,7 +14,6 @@ import voluptuous as vol
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN, PLATFORM_SCHEMA)
 from homeassistant.components.accuweather.sensor import ATTRIBUTION as AW_ATTRIBUTION
-from homeassistant.components.ecobee.sensor import ATTRIBUTION as ECOBEE_ATTRIBUTION
 from homeassistant.const import (
     ATTR_ATTRIBUTION, CONF_ENTITY_ID, CONF_API_KEY, CONF_NAME,
     CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START)
@@ -239,24 +238,10 @@ class IlluminanceSensor(Entity):
                     _LOGGER.error('No %s attribute: %s',
                                   ATTR_ATTRIBUTION, self._entity_id)
                 return
-            raw_conditions = state.state
+            conditions = state.state
             if attribution == AW_ATTRIBUTION:
-                try:
-                    conditions = int(raw_conditions)
-                except (TypeError, ValueError):
-                    if self._init_complete:
-                        _LOGGER.error('State of AccuWeather sensor not a number: %s',
-                                      self._entity_id)
-                    return
                 mapping = AW_MAPPING
-            elif attribution == ECOBEE_ATTRIBUTION:
-                try:
-                    conditions = int(raw_conditions)
-                except (TypeError, ValueError):
-                    if self._init_complete:
-                        _LOGGER.error('State of Ecobee sensor not a number: %s',
-                                      self._entity_id)
-                    return
+            elif 'Ecobee' in attribution:
                 mapping = ECOBEE_MAPPING
             else:
                 if self._init_complete:
@@ -271,7 +256,7 @@ class IlluminanceSensor(Entity):
         if illuminance == 0:
             if self._init_complete:
                 _LOGGER.error('Unexpected current observation: %s',
-                              raw_conditions)
+                              conditions)
             return
 
         self._state = round(illuminance * sun_factor)
