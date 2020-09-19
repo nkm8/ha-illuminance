@@ -8,6 +8,7 @@ The following sources of weather data are supported:
 
 * Weather Underground
 * [AccuWeather (symbol)](https://www.home-assistant.io/integrations/accuweather/)
+* [Ecobee (symbol)](https://www.home-assistant.io/integrations/ecobee/)
 
 Follow the installation instructions below.
 Then add the desired configuration. Here is an example of a typical configuration:
@@ -15,7 +16,7 @@ Then add the desired configuration. Here is an example of a typical configuratio
 ```yaml
 sensor:
   - platform: illuminance
-    entity_id: weather.accuweather_home
+    entity_id: weather.home
 ```
 
 ## Installation
@@ -40,9 +41,18 @@ where `<config>` is your Home Assistant configuration directory.
 
 ## Examples
 
-### AccuWeather Entity
+### AccuWeather
 
 AccuWeather can only be configured via the Integrations menu under Configuration in the Home Assistant UI
+
+### Ecobee
+
+By configuring the Ecobee integration, you will automatically get a weather sensor with a name that matches your main thermostat.
+
+```yaml
+ecobee:
+  api_key: YOUR_API_KEY
+```
 
 ### Weather Underground
 
