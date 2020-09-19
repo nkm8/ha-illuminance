@@ -1,7 +1,7 @@
 """
 Illuminance Sensor.
 
-A Sensor platform that estimates outdoor illuminance from Weather Underground or YR current conditions.
+A Sensor platform that estimates outdoor illuminance from Weather Underground or AccuWeather current conditions.
 """
 import asyncio
 import datetime as dt
@@ -13,7 +13,7 @@ import voluptuous as vol
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN, PLATFORM_SCHEMA)
-from homeassistant.components.yr.sensor import ATTRIBUTION as YRS_ATTRIBUTION
+from homeassistant.components.accuweather.sensor import ATTRIBUTION as AW_ATTRIBUTION
 from homeassistant.const import (
     ATTR_ATTRIBUTION, CONF_ENTITY_ID, CONF_API_KEY, CONF_NAME,
     CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START)
@@ -37,14 +37,12 @@ WU_MAPPING = (
     (2500, ('mostlycloudy',)),
     (7500, ('partlysunny', 'partlycloudy', 'mostlysunny', 'hazy')),
     (10000, ('sunny', 'clear')))
-YR_MAPPING = (
-    (200, (6, 11, 14, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-           33, 34)),
-    (1000, (5, 7, 8, 9, 10, 12, 13, 15, 40, 41, 42, 43, 44, 45, 46, 47, 48,
-            49, 50)),
-    (2500, (4, )),
-    (7500, (2, 3)),
-    (10000, (1, )))
+AW_MAPPING = (
+    (200, ('lightning','lightning-rainy', 'pouring')),
+    (1000, ('cloudy', 'fog', 'rainy', 'snowy', 'snowy-rainy', 'hail', 'exceptional', 'windy')),
+    (2500, ('mostlycloudy')),
+    (7500, ('partlycloudy')),
+    (10000, ('sunny', 'clear-night')))
 
 CONF_QUERY = 'query'
 
@@ -236,15 +234,15 @@ class IlluminanceSensor(Entity):
                                   ATTR_ATTRIBUTION, self._entity_id)
                 return
             raw_conditions = state.state
-            if attribution == YRS_ATTRIBUTION:
+            if attribution == AW_ATTRIBUTION:
                 try:
                     conditions = int(raw_conditions)
                 except (TypeError, ValueError):
                     if self._init_complete:
-                        _LOGGER.error('State of YR sensor not a number: %s',
+                        _LOGGER.error('State of AccuWeather sensor not a number: %s',
                                       self._entity_id)
                     return
-                mapping = YR_MAPPING
+                mapping = AW_MAPPING
             else:
                 if self._init_complete:
                     _LOGGER.error('Unsupported sensor: %s', self._entity_id)
